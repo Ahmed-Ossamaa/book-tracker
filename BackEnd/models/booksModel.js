@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const categories = require("../utils/bookCategories")
 
 const bookSchema = new mongoose.Schema({
 
@@ -16,35 +17,7 @@ const bookSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: [
-            "Romance",
-            "Mystery",
-            "Thriller",
-            "Horror",
-            "Fantasy",
-            "Fiction",
-            "Non-Fiction",
-            "Biography",
-            "Self-Help",
-            "Science",
-            "Technology",
-            "Programming",
-            "History",
-            "Politics",
-            "Philosophy",
-            "Psychology",
-            "Communication",
-            "Business",
-            "Health & Fitness",
-            "Education",
-            "self-help",
-            "Religion & Spirituality",
-            "Travel",
-            "Cooking",  
-            "Art",    
-            "Medecine",  
-            "Other"
-        ],
+        enum: categories,
         default: "Other"
     },
 

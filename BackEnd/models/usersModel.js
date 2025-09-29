@@ -2,13 +2,21 @@ const mongoose = require("mongoose")
 
 const userSchema = new mongoose.Schema({
 
-    name: {
+    firstName: {
         type: String,
         required: [true, " User's Name is required"]
     },
+    lastName: {
+        type: String,
+        required: [true, "User's Last Name is required"]
+    },
+    fullName: {
+        type: String
+    },
     email: {
         type: String,
-        required: [true, "User's Email is required"]
+        required: [true, "User's Email is required"],
+        unique: true
     },
     password: {
         type: String,
@@ -23,5 +31,10 @@ const userSchema = new mongoose.Schema({
     }
 
 }, { timestamps: true })
+
+userSchema.pre("save", function (next) {
+    this.fullName = `${this.firstName} ${this.lastName}`;
+    next();
+});
 
 module.exports = mongoose.model("User", userSchema);

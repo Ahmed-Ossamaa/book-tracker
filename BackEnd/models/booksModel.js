@@ -10,10 +10,44 @@ const bookSchema = new mongoose.Schema({
         maxLength: [50, "Book title shouldnt exceed 50 characters"]
 
     },
-    authour: {
+    author: {
         type: String,
         default: "unknown author"
     },
+    category: {
+        type: String,
+        enum: [
+            "Romance",
+            "Mystery",
+            "Thriller",
+            "Horror",
+            "Fantasy",
+            "Fiction",
+            "Non-Fiction",
+            "Biography",
+            "Self-Help",
+            "Science",
+            "Technology",
+            "Programming",
+            "History",
+            "Politics",
+            "Philosophy",
+            "Psychology",
+            "Communication",
+            "Business",
+            "Health & Fitness",
+            "Education",
+            "self-help",
+            "Religion & Spirituality",
+            "Travel",
+            "Cooking",  
+            "Art",    
+            "Medecine",  
+            "Other"
+        ],
+        default: "Other"
+    },
+
     coverImage: { type: String },
     rating: {
         type: Number,
@@ -26,6 +60,6 @@ const bookSchema = new mongoose.Schema({
         ref: "User"
     }
 
-},{ timestamps: true })
+}, { timestamps: true })
 
-module.exports =mongoose.model("Book", bookSchema );
+module.exports = mongoose.model("Book", bookSchema);

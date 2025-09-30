@@ -63,12 +63,12 @@ const editBook = asyncHandler(async (req, res, next) => {
         throw new NotFoundError("Book not found or not authorized");;
     }
 
-    book.title = title;
-    book.author = author;
-    book.category = category;
-    book.coverImage = coverImage;
-    book.rating = rating;
-    book.review = review;
+    if (title !== undefined) book.title = title;
+    if (author !== undefined) book.author = author;
+    if (category !== undefined) book.category = category;
+    if (coverImage !== undefined) book.coverImage = coverImage;
+    if (rating !== undefined) book.rating = rating;
+    if (review !== undefined) book.review = review;
     const updatedBook = await book.save();
 
     res.status(200).json({

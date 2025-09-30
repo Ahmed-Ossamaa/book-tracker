@@ -1,6 +1,6 @@
 const joi = require("joi");
 const categories = require("../utils/bookCategories");
-
+// =========================== Add book schema ===============================
 const addBookSchema = joi.object({
     title: joi.string().required().min(2).max(50).messages({
         "string.empty": "Book title can't be empty",
@@ -24,7 +24,7 @@ const addBookSchema = joi.object({
     review: joi.string().optional()
 });
 
-
+// =========================== Edit book schema ===============================
 const editBookSchema = joi.object({
     title: joi.string().min(2).max(50).messages({
         "string.empty": "Book title can't be empty",

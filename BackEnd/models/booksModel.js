@@ -22,6 +22,7 @@ const bookSchema = new mongoose.Schema({
     },
 
     coverImage: { type: String },
+    coverImageId: { type: String },
     rating: {
         type: Number,
         min: 1,

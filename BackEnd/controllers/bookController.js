@@ -1,7 +1,7 @@
-
 const Book = require("../models/booksModel");
 const asyncHandler = require("express-async-handler");
 const { NotFoundError } = require("../utils/ApiError");
+const cloudinary = require("../config/cloudinary"); // Only needed for deleting images
 
 // User : get user's own books
 const getBooks = asyncHandler(async (req, res, next) => {
@@ -19,7 +19,6 @@ const getBooks = asyncHandler(async (req, res, next) => {
     );
 })
 
-
 //User : get user's own book by id
 const getBook = asyncHandler(async (req, res, next) => {
     const { id } = req.params
@@ -30,64 +29,88 @@ const getBook = asyncHandler(async (req, res, next) => {
     }
 
     res.status(200).json(book)
-
 })
 
 //User : add book
 const addBook = asyncHandler(async (req, res, next) => {
-    const { title, author, category, coverImage, rating, review } = req.body;
+    const { title, author, category, rating, review } = req.body;
+
+    let coverImageUrl = null;
+    let coverImageId = null;
+
+    // multer-storage-cloudinary already uploaded the file
+    if (req.file) {
+        coverImageUrl = req.file.path; // Cloudinary URL
+        coverImageId = req.file.filename; // Cloudinary public_id
+    }
 
     const book = await Book.create({
         title,
         author,
         category,
-        coverImage,
+        coverImage: coverImageUrl,
+        coverImageId,
         rating,
         review,
-        user: req.user.id
-    })
-    res.status(201).json({
-        message: `${book.title} added successfully`,
-        book
+        user: req.user.id,
     });
 
-
-})
+    res.status(201).json({
+        message: `${book.title} added successfully`,
+        book,
+    });
+});
 
 //User : update book by id
 const editBook = asyncHandler(async (req, res, next) => {
-    const { id } = req.params
-    const { title, author, category, coverImage, rating, review } = req.body;
+    const { id } = req.params;
+    const { title, author, category, rating, review } = req.body;
 
-    const book = await Book.findOne({ _id: id, user: req.user.id })
+    const book = await Book.findOne({ _id: id, user: req.user.id });
     if (!book) {
-        throw new NotFoundError("Book not found or not authorized");;
+        throw new NotFoundError("Book not found or not authorized");
+    }
+
+    // If new cover uploaded, replace old one in Cloudinary
+    if (req.file) {
+        if (book.coverImageId) {
+            await cloudinary.uploader.destroy(book.coverImageId);
+        }
+        book.coverImage = req.file.path; // Cloudinary URL
+        book.coverImageId = req.file.filename; 
     }
 
     if (title !== undefined) book.title = title;
     if (author !== undefined) book.author = author;
     if (category !== undefined) book.category = category;
-    if (coverImage !== undefined) book.coverImage = coverImage;
     if (rating !== undefined) book.rating = rating;
     if (review !== undefined) book.review = review;
+
     const updatedBook = await book.save();
 
     res.status(200).json({
         message: `${updatedBook.title} updated successfully`,
-        book: updatedBook
+        book: updatedBook,
     });
-
-})
+});
 
 //User : delete book by id
 const deleteBook = asyncHandler(async (req, res, next) => {
-    const { id } = req.params
-    const book = await Book.findOneAndDelete({ _id: id, user: req.user.id })
+    const { id } = req.params;
+    
+    const book = await Book.findOne({ _id: id, user: req.user.id });
     if (!book) {
         throw new NotFoundError("Book not found or not authorized");
     }
-    res.status(200).json(`${book.title} deleted successfully`)
 
+    // Delete image from Cloudinary if exists
+    if (book.coverImageId) {
+        await cloudinary.uploader.destroy(book.coverImageId);
+    }
+
+    await Book.findByIdAndDelete(id);
+    
+    res.status(200).json({ message: `${book.title} deleted successfully` });
 })
 
 //Admin : get all books for all users
@@ -105,7 +128,6 @@ const getAllBooks = asyncHandler(async (req, res) => {
             books
         }
     );
-
 })
 
 module.exports = {

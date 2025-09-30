@@ -2,6 +2,7 @@ const express = require('express')
 //import middlewares
 const {isAdmin} = require("../middleware/adminMiddleware")
 const {protect} = require("../middleware/authMiddleware")
+const upload = require("../middleware/upload")
 //import controllers functions
 const {getBooks, getBook, addBook, editBook, deleteBook, getAllBooks } = require("../controllers/bookController")
 //import validators
@@ -23,10 +24,10 @@ router.get("/",validateQuery(paginationSchema),getBooks)
 router.get("/:id",getBook)
 
 //add book
-router.post("/",validate(addBookSchema),addBook)
+router.post("/", upload.single("coverImage"), validate(addBookSchema), addBook)
 
 //edit book by id
-router.patch("/:id",validate(editBookSchema),editBook)
+router.patch("/:id", upload.single("coverImage"), validate(editBookSchema), editBook)
 
 //delete book by id
 router.delete("/:id", deleteBook)

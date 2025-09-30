@@ -80,7 +80,6 @@ const updateProfile = asyncHandler(async (req, res, next) => {
     }
 
     const user = await User.findById(req.user._id);
-
     // Update fields
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;

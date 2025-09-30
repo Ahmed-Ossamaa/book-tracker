@@ -28,6 +28,7 @@ const getBook = asyncHandler(async (req, res, next) => {
     if (!book) {
         throw new NotFoundError("Book not found or not authorized");
     }
+
     res.status(200).json(book)
 
 })

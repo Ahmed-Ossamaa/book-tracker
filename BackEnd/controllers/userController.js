@@ -2,7 +2,7 @@ const User = require("../models/usersModel");
 const bcrypt = require("bcryptjs");//for hasing password
 const jwt = require("jsonwebtoken");//for auth
 const asyncHandler = require("express-async-handler");
-const { ConflictError, UnauthorizedError, NotFoundError } = require("../utils/ApiError");
+const { ConflictError, UnauthorizedError, NotFoundError, BadRequestError } = require("../utils/ApiError");
 
 // Generate JWT
 const generateToken = (id) => {
@@ -70,8 +70,6 @@ const getMyProfile = asyncHandler(async (req, res, next) => {
 
 });
 
-// userController.js
-const { BadRequestError } = require("../utils/ApiError");
 
 const updateProfile = asyncHandler(async (req, res, next) => {
     const { firstName, lastName, email } = req.body;

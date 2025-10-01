@@ -23,9 +23,13 @@ const getBooks = asyncHandler(async (req, res, next) => {
 const getBook = asyncHandler(async (req, res, next) => {
     const { id } = req.params
 
-    const book = await Book.findOne({ _id: id, user: req.user.id })
+    const book = await Book.findOne({ _id: id })
     if (!book) {
         throw new NotFoundError("Book not found or not authorized");
+    }
+        // Check ownership OR admin
+    if (book.user.toString() !== req.user.id && req.user.role !== "admin") {
+        throw new NotFoundError("Not authorized to delete this book");
     }
 
     res.status(200).json(book)
@@ -97,10 +101,15 @@ const editBook = asyncHandler(async (req, res, next) => {
 //User : delete book by id
 const deleteBook = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    
-    const book = await Book.findOne({ _id: id, user: req.user.id });
+
+    const book = await Book.findById(id);
     if (!book) {
-        throw new NotFoundError("Book not found or not authorized");
+        throw new NotFoundError("Book not found");
+    }
+
+    // Check ownership OR admin
+    if (book.user.toString() !== req.user.id && req.user.role !== "admin") {
+        throw new NotFoundError("Not authorized to delete this book");
     }
 
     // Delete image from Cloudinary if exists
@@ -109,9 +118,10 @@ const deleteBook = asyncHandler(async (req, res, next) => {
     }
 
     await Book.findByIdAndDelete(id);
-    
+
     res.status(200).json({ message: `${book.title} deleted successfully` });
-})
+});
+
 
 //Admin : get all books for all users
 const getAllBooks = asyncHandler(async (req, res) => {

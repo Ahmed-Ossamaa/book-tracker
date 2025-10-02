@@ -82,8 +82,8 @@ const updateProfile = asyncHandler(async (req, res, next) => {
     if (!user) {
         throw new NotFoundError("User not found");
     }
-    if (req.body.removeProfilePic) {
-        if (user.profilePic && user.profilePicId) {
+    if (req.body.removeProfilePic===true) {
+        if (user.profilePicId) {
             await cloudinary.uploader.destroy(user.profilePicId);
         }
         user.profilePic = undefined;
@@ -91,7 +91,7 @@ const updateProfile = asyncHandler(async (req, res, next) => {
     }
 
     if (req.file) {
-        if (user.profilePic) {
+        if (user.profilePicId) {
             await cloudinary.uploader.destroy(user.profilePicId);
         }
         user.profilePic = req.file.path; // Cloudinary URL
@@ -120,7 +120,7 @@ const updateProfile = asyncHandler(async (req, res, next) => {
         profilePic: updatedUser.profilePic,
         profilePicId: updatedUser.profilePicId,
 
-    });
+    })
 });
 
 const updatePassword = asyncHandler(async (req, res, next) => {

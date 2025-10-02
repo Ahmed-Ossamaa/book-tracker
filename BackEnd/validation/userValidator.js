@@ -46,7 +46,7 @@ const updateProfileSchema = joi.object({
         "string.email": "Invalid email format",
         "string.empty": "Email can't be empty"
     }),
-    profilePicture: joi.string().optional()
+    removeProfilePic: joi.boolean().optional()
 });
 
 // =========================== Update password schema ===============================
@@ -61,6 +61,6 @@ const updatePwSchema = joi.object({
     })
 });
 
-module.exports = { registerSchema, loginSchema,updateProfileSchema,updatePwSchema };
+module.exports = { registerSchema, loginSchema, updateProfileSchema, updatePwSchema };
 
 

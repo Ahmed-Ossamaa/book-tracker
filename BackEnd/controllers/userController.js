@@ -3,12 +3,12 @@ const bcrypt = require("bcryptjs");//for hasing password
 const jwt = require("jsonwebtoken");//for auth
 const asyncHandler = require("express-async-handler");
 const { ConflictError, UnauthorizedError, NotFoundError, BadRequestError } = require("../utils/ApiError");
+const cloudinary = require("../config/cloudinary"); //for destroying images
 
 // Generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 }
-
 
 // Register
 const register = asyncHandler(async (req, res, next) => {
@@ -65,6 +65,7 @@ const getMyProfile = asyncHandler(async (req, res, next) => {
         fullName: req.user.fullName,
         email: req.user.email,
         role: req.user.role,
+        profilePic: req.user.profilePic,
         createdAt: req.user.createdAt
     });
 
@@ -78,7 +79,24 @@ const updateProfile = asyncHandler(async (req, res, next) => {
     }
 
     const user = await User.findById(req.user._id);
-    // Update fields
+    if (!user) {
+        throw new NotFoundError("User not found");
+    }
+    if (req.body.removeProfilePic) {
+        if (user.profilePic && user.profilePicId) {
+            await cloudinary.uploader.destroy(user.profilePicId);
+        }
+        user.profilePic = undefined;
+        user.profilePicId = undefined;
+    }
+
+    if (req.file) {
+        if (user.profilePic) {
+            await cloudinary.uploader.destroy(user.profilePicId);
+        }
+        user.profilePic = req.file.path; // Cloudinary URL
+        user.profilePicId = req.file.filename;
+    }
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
     if (email) {
@@ -98,30 +116,33 @@ const updateProfile = asyncHandler(async (req, res, next) => {
         lastName: updatedUser.lastName,
         fullName: updatedUser.fullName,
         email: updatedUser.email,
-        role: updatedUser.role
+        role: updatedUser.role,
+        profilePic: updatedUser.profilePic,
+        profilePicId: updatedUser.profilePicId,
+
     });
 });
 
 const updatePassword = asyncHandler(async (req, res, next) => {
     const { currentPassword, newPassword } = req.body;
-    
+
     if (!currentPassword || !newPassword) {
         throw new BadRequestError("Current password and new password are required");
     }
-    
+
     // Get user with password field
     const user = await User.findById(req.user._id).select('+password');
-    
+
     // Verify current password
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
         throw new UnauthorizedError("Current password is incorrect");
     }
-    
+
     // Hash and save new password
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
-    
+
     res.status(200).json({ message: "Password updated successfully" });
 });
 
@@ -143,4 +164,4 @@ const deleteUser = asyncHandler(async (req, res, next) => {
 
 })
 
-module.exports = { register, login, getAllUsers,getMyProfile ,updateProfile, updatePassword, deleteUser };
+module.exports = { register, login, getAllUsers, getMyProfile, updateProfile, updatePassword, deleteUser };

@@ -21,13 +21,17 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "Password is required"],
-        minLength: [6, "Password must be atleast 6 characters"]
+        minLength: [6, "Password must be atleast 6 characters"],
     },
     role: {
         type: String,
         enum: ["admin", "user"],
         default: "user"
-    }
+    },
+    profilePic: {
+        type: String
+    },
+    profilePicId: { type: String },
 
 }, { timestamps: true })
 

@@ -8,20 +8,23 @@ const addBookSchema = joi.object({
         "string.min": "Book title must be at least 2 characters",
         "string.max": "Book title must not exceed 50 characters"
     }),
-    author: joi.string().optional().messages({
-        "string.empty": "Book author can't be empty"
-    }),
+    author: joi.string().trim().allow("").default("Unknown Author"),
     category: joi.string()
         .valid(...categories).messages({
             "any.only": "Invalid category",
         }),
     coverImage: joi.string().optional(),
-    rating: joi.number().optional().min(1).max(5).messages({
-        "number.empty": "Book rating can't be empty",
+    rating: joi.number().min(1).max(5).optional().allow(null).when('review', {
+        is: joi.string().min(1),
+        then: joi.number().required().messages({
+            "any.required": "Rating is required when review is provided",
+            "number.base": "Rating must be a number"
+        })
+    }).messages({
         "number.min": "Book rating should be at least 1",
         "number.max": "Book rating should not exceed 5"
     }),
-    review: joi.string().optional()
+    review: joi.string().optional().allow("")
 });
 
 // =========================== Edit book schema ===============================
@@ -31,18 +34,22 @@ const editBookSchema = joi.object({
         "string.min": "Book title must be at least 2 characters",
         "string.max": "Book title must not exceed 50 characters"
     }).optional(),
-    author: joi.string().messages({
-        "string.empty": "Book author can't be empty"
-    }).optional(),
+    author: joi.string().allow("").default("Unknown Author").optional(),
     category: joi.string()
         .valid(...categories)
-        .messages({"any.only": "Invalid category"}).optional(),
+        .messages({ "any.only": "Invalid category" }).optional(),
     coverImage: joi.string().optional(),
-    rating: joi.number().min(1).max(5).messages({
+    rating: joi.number().min(1).max(5).optional().allow(null).when('review', {
+        is: joi.string().min(1),
+        then: joi.number().required().messages({
+            "any.required": "Rating is required when review is provided",
+            "number.base": "Rating must be a number"
+        })
+    }).messages({
         "number.min": "Book rating should be at least 1",
         "number.max": "Book rating should not exceed 5"
-    }).optional(),
-    review: joi.string().optional()
+    }),
+    review: joi.string().optional().allow("")
 });
 
 module.exports = { addBookSchema, editBookSchema };

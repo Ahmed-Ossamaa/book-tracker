@@ -1,7 +1,7 @@
 const Book = require("../models/booksModel");
 const asyncHandler = require("express-async-handler");
 const { NotFoundError } = require("../utils/ApiError");
-const cloudinary = require("../config/cloudinary"); // Only needed for deleting images
+const cloudinary = require("../config/cloudinary"); // for destroying images
 
 // User : get user's own books
 const getBooks = asyncHandler(async (req, res, next) => {
@@ -42,10 +42,10 @@ const addBook = asyncHandler(async (req, res, next) => {
     let coverImageUrl = null;
     let coverImageId = null;
 
-    // multer-storage-cloudinary already uploaded the file
+
     if (req.file) {
         coverImageUrl = req.file.path; // Cloudinary URL
-        coverImageId = req.file.filename; // Cloudinary public_id
+        coverImageId = req.file.filename; 
     }
 
     const book = await Book.create({

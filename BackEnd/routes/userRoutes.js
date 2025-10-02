@@ -1,6 +1,7 @@
 const express = require("express")
 const {isAdmin} = require("../middleware/adminMiddleware")
 const {protect} = require("../middleware/authMiddleware")
+const upload = require("../middleware/upload")
 //import controllers functions
 const {register,login,getAllUsers,deleteUser,getMyProfile,updateProfile,updatePassword} = require("../controllers/userController")
 //import validators
@@ -21,7 +22,7 @@ router.post("/login",validate(loginSchema),login)
 router.use(protect)
 //========================= Protected User routes ==================================
 router.get("/me",getMyProfile)//get my profile
-router.patch("/me",validate(updateProfileSchema),updateProfile)//update my profile
+router.patch("/me", upload.single("profilePic"),validate(updateProfileSchema),updateProfile)//update my profile
 router.patch("/me/password",validate(updatePwSchema),updatePassword)//update my password
 
 //======================== Protected Admin routes ===================================

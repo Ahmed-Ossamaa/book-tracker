@@ -13,7 +13,7 @@ const bookSchema = new mongoose.Schema({
     },
     author: {
         type: String,
-        default: "unknown author"
+        default: "Unknown Author"
     },
     category: {
         type: String,
@@ -26,7 +26,13 @@ const bookSchema = new mongoose.Schema({
     rating: {
         type: Number,
         min: 1,
-        max: 5
+        max: 5,
+        validate: {
+            validator: function (value) {
+                return value == null || (value >= 1 && value <= 5);
+            },
+            message: "Book rating should be between 1 and 5"
+        }
     },
     review: { type: String },
     user: {

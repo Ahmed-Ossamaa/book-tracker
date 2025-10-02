@@ -14,8 +14,9 @@ const registerSchema = joi.object({
         "any.required": "Email is required",
         "string.empty": "Email can't be empty"
     }),
-    password: joi.string().min(6).required().messages({
+    password: joi.string().min(6).max(30).required().messages({
         "string.min": "Password must be at least 6 characters",
+        "string.max": "Password must not exceed 30 characters",
         "any.required": "Password is required"
     })
 });
@@ -26,8 +27,9 @@ const loginSchema = joi.object({
         "string.email": "Invalid email format",
         "any.required": "Email is required"
     }),
-    password: joi.string().min(6).required().messages({
+    password: joi.string().min(6).max(30).required().messages({
         "string.min": "Password must be at least 6 characters",
+        "string.max": "Password must not exceed 30 characters",
         "any.required": "Password is required"
     })
 });
@@ -43,9 +45,8 @@ const updateProfileSchema = joi.object({
     email: joi.string().email().optional().messages({
         "string.email": "Invalid email format",
         "string.empty": "Email can't be empty"
-    })
-}).min(1).messages({
-    "object.min": "At least one field is required to update"
+    }),
+    profilePicture: joi.string().optional()
 });
 
 // =========================== Update password schema ===============================

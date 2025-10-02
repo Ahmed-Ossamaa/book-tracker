@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { bookService } from '../services/bookService';
+import { userService } from '../services/userService';
 import { BookCard } from '../components/books/BookCard';
 import { BookForm } from '../components/books/BookForm';
 import { StatsCard } from '../components/books/StatsCard';
@@ -21,11 +22,22 @@ export const Dashboard = () => {
     const [editingBook, setEditingBook] = useState(null);
     const [pagination, setPagination] = useState({ page: 1, limit: 12, total: 0 });
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [profile, setProfile] = useState(null);
 
     useEffect(() => {
         fetchBooks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchProfile();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pagination.page]);
+
+    const fetchProfile = async () => {
+        try {
+            const data = await userService.getProfile();
+            setProfile(data);
+        } catch (err) {
+            console.error("Failed to load profile", err);
+        }
+    };
 
     const fetchBooks = async () => {
         try {
@@ -103,19 +115,17 @@ export const Dashboard = () => {
             {/* Profile Header Section */}
             <div className="bg-gradient-to-r from-dark via-secondary to-dark text-white py-12">
                 <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-                        {/* Profile Picture */}
-                        <div className="w-32 h-32 rounded-full bg-primary flex items-center justify-center text-4xl font-bold shadow-xl">
-                            {getInitials(user?.name)}
+                    <div className="flex flex-col items-center space-y-8">
+                        {/* User Info */}
+                        <div className="text-center">
+                            <h1 className="text-4xl font-bold mb-2">{user?.fullName}</h1>
+                            <p className="text-gray-300">{user?.email}</p>
                         </div>
 
-                        {/* User Info */}
-                        <div className="flex-1 text-center md:text-left">
-                            <h1 className="text-4xl font-bold mb-2">{user?.name}</h1>
-                            <p className="text-gray-300 mb-6">{user?.email}</p>
-
-                            {/* Stats */}
-                            <div className="grid grid-cols-3 gap-4 max-w-2xl">
+                        {/* Stats Grid with Avatar in Center */}
+                        <div className="relative flex items-center justify-center gap-8 max-w-5xl w-full">
+                            {/* Left Side - 2 Cards */}
+                            <div className="grid grid-cols-1 gap-4 flex-1">
                                 <StatsCard
                                     icon={FiBookOpen}
                                     label="Own Books"
@@ -123,16 +133,43 @@ export const Dashboard = () => {
                                     color="primary"
                                 />
                                 <StatsCard
+                                    icon={FiBookOpen}
+                                    label="Want to Read"
+                                    value={totalBooks}
+                                    color="green"
+                                />
+                            </div>
+
+                            {/* Center - Profile Picture */}
+                            <div className="flex-shrink-0">
+                                <div className="w-40 h-40 rounded-full bg-secondary flex items-center justify-center  font-bold ">
+                                    {profile?.profilePic ? (
+                                        <img
+                                            src={profile.profilePic}
+                                            alt={profile.firstName}
+                                            className=" rounded-full object-cover shadow"
+                                        />
+                                    ) : (
+                                        <div className="w-40 h-40 rounded-full bg-gray-600 flex items-center justify-center text-white text-2xl font-bold">
+                                            {getInitials(profile?.firstName || "User")}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Right Side - 2 Cards */}
+                            <div className="grid grid-cols-1 gap-4 flex-1">
+                                <StatsCard
                                     icon={FiEdit}
                                     label="Reviews"
                                     value={booksWithReviews}
-                                    color="blue"
+                                    color="purple"
                                 />
                                 <StatsCard
                                     icon={FiStar}
                                     label="Avg Rating"
                                     value={averageRating}
-                                    color="purple"
+                                    color="yellow"
                                 />
                             </div>
                         </div>
@@ -156,8 +193,8 @@ export const Dashboard = () => {
                     <button
                         onClick={() => setSelectedCategory('All')}
                         className={`px-4 py-2 rounded-full transition ${selectedCategory === 'All'
-                                ? 'bg-primary text-white'
-                                : 'bg-white text-gray-700 hover:bg-gray-100'
+                            ? 'bg-primary text-white'
+                            : 'bg-white text-gray-700 hover:bg-gray-100'
                             }`}
                     >
                         All ({totalBooks})
@@ -170,8 +207,8 @@ export const Dashboard = () => {
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
                                 className={`px-4 py-2 rounded-full transition ${selectedCategory === category
-                                        ? 'bg-primary text-white'
-                                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                                    ? 'bg-primary text-white'
+                                    : 'bg-white text-gray-700 hover:bg-gray-100'
                                     }`}
                             >
                                 {category} ({count})

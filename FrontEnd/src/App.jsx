@@ -8,6 +8,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { ProfilePage } from './pages/UserProfile';
+import { ChangePassword } from './pages/ChangPassowrd';
 import { BookDetails } from './pages/BookDetails';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { Toaster } from 'react-hot-toast';
@@ -72,6 +73,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/books/:id" element={<ProtectedRoute><BookDetails /></ProtectedRoute>} />
         <Route path="/users/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/users/change-password" element={<ProtectedRoute><ChangePassword/></ProtectedRoute>} />
 
         {/* Admin Routes */}
         <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

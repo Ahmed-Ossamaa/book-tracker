@@ -54,4 +54,11 @@ export const bookService = {
         const response = await api.get(`/books/all?page=${page}&limit=${limit}`);
         return response.data;
     }
+    // Admin: Get all users   ====>>  toDo
+
+
+
+    // Admin: delete user  ====>>  toDo
+
+    
 };

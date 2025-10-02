@@ -1,4 +1,3 @@
-// src/components/layout/Navbar.jsx
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { FiBookOpen, FiLogOut, FiUser, FiShield } from 'react-icons/fi';
@@ -15,7 +14,7 @@ export const Navbar = () => {
     };
 
     return (
-        <nav className="bg-dark text-white shadow-lg">
+        <nav className="bg-dark text-white shadow-lg sticky top-0 z-50">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
@@ -74,11 +73,11 @@ export const Navbar = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-4 me-5">
                             <Link to="/login" className="hover:text-primary transition">
                                 Login
                             </Link>
-                            <Link to="/register" className="bg-primary px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                            <Link to="/register" className="hover:text-primary transition">
                                 Sign Up
                             </Link>
                         </div>

@@ -34,15 +34,15 @@ export const Landing = () => {
                     <h1 className="text-5xl md:text-6xl font-bold mb-6">
                         Track Your Reading Journey
                     </h1>
-                    <p className="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto">
+                    <p className="text-xl md:text-2xl mb-8  max-w-3xl mx-auto">
                         Organize your books, rate them, write reviews, and build your personal library
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                         <Link
                             to="/register"
-                            className="bg-primary hover:bg-red-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg"
+                            className="bg-blue-600 hover:bg-primary text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg"
                         >
-                            Get Started Free
+                            Join Us!
                         </Link>
                         <Link
                             to="/login"

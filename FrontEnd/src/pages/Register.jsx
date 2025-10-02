@@ -66,7 +66,7 @@ export const Register = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-dark via-secondary to-dark flex items-center justify-center px-4 py-8">
             <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
-                <div className="flex items-center justify-center space-x-2 mb-8">
+                <div className="flex items-center justify-center space-x-2 mb-6">
                     <FiBookOpen className="text-primary" size={32} />
                     <h1 className="text-2xl font-bold">BOOK<span className="text-primary">TRACKER</span></h1>
                 </div>

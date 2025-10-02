@@ -10,7 +10,7 @@ export const BookForm = ({ isOpen, onClose, onSubmit, initialData, isEdit = fals
         title: '',
         author: '',
         category: 'Other',
-        rating: 0,
+        rating: null,
         review: '',
         coverImage: null
     });
@@ -24,7 +24,7 @@ export const BookForm = ({ isOpen, onClose, onSubmit, initialData, isEdit = fals
                 title: initialData.title || '',
                 author: initialData.author || '',
                 category: initialData.category || 'Other',
-                rating: initialData.rating || 0,
+                rating: initialData.rating || null,
                 review: initialData.review || '',
                 coverImage: null
             });
@@ -84,7 +84,7 @@ export const BookForm = ({ isOpen, onClose, onSubmit, initialData, isEdit = fals
             title: '',
             author: '',
             category: 'Other',
-            rating: 0,
+            rating: null,
             review: '',
             coverImage: null
         });
@@ -94,7 +94,7 @@ export const BookForm = ({ isOpen, onClose, onSubmit, initialData, isEdit = fals
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={handleClose} title={isEdit ? 'Edit Book' : 'Add New Book'}>
+        <Modal isOpen={isOpen} onClose={handleClose} title={isEdit ? <>Edit <span className="text-blue-900 font-bold">{initialData.title}</span> Book</> : 'Add New Book'}>
             <form onSubmit={handleSubmit}>
                 {/* Cover Image Upload */}
                 <div className="mb-4">
@@ -133,7 +133,7 @@ export const BookForm = ({ isOpen, onClose, onSubmit, initialData, isEdit = fals
                     name="author"
                     value={formData.author}
                     onChange={handleChange}
-                    placeholder="Enter author name"
+                    placeholder="Enter author name (optional)"
                 />
 
                 {/* Category */}

@@ -1,23 +1,3 @@
-// src/utils/constants.js
-export const BOOK_CATEGORIES = [
-  'Fiction',
-  'Non-Fiction',
-  'Mystery',
-  'Thriller',
-  'Romance',
-  'Science Fiction',
-  'Fantasy',
-  'Biography',
-  'History',
-  'Self-Help',
-  'Business',
-  'Poetry',
-  'Other'
-];
-
-export const RATINGS = [1, 2, 3, 4, 5];
-
-// ==================== src/utils/helpers.js ====================
 export const truncateText = (text, maxLength = 100) => {
   if (!text) return '';
   if (text.length <= maxLength) return text;

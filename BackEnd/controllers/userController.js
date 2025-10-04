@@ -82,7 +82,7 @@ const updateProfile = asyncHandler(async (req, res, next) => {
     if (!user) {
         throw new NotFoundError("User not found");
     }
-    if (req.body.removeProfilePic===true) {
+    if (req.body.removeProfilePic === true) {
         if (user.profilePicId) {
             await cloudinary.uploader.destroy(user.profilePicId);
         }
@@ -164,4 +164,32 @@ const deleteUser = asyncHandler(async (req, res, next) => {
 
 })
 
-module.exports = { register, login, getAllUsers, getMyProfile, updateProfile, updatePassword, deleteUser };
+const toggleBanUser = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const { isBanned } = req.body
+    const user = await User.findById(id);
+    if (!user) {
+        throw new NotFoundError(`User with id ${id} not found`);
+    }
+    user.isBanned = isBanned;
+    await user.save();
+    res.json({ message: `User${user.fullName} ${isBanned ? 'banned' : 'unbanned'} successfully` });
+
+})
+
+const toggleRole = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const { role } = req.body;
+    const user = await User.findById(id);
+    if (!user) {
+        throw new NotFoundError(`User with id ${id} not found`);
+    }
+    user.role = role;
+    await user.save();
+    res.json({ message: `User ${user.fullName} role changed to ${role}` });
+})
+
+module.exports = {
+    register, login, getAllUsers, getMyProfile, updateProfile,
+    updatePassword, deleteUser, toggleBanUser, toggleRole
+};

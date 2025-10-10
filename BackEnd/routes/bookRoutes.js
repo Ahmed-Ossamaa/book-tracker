@@ -16,6 +16,7 @@ const router = express.Router()
 router.use(protect); // all routes are protected
 //=========================== Admin routes ===========================
 router.get("/all",isAdmin,validateQuery(paginationSchema),getAllBooks)
+router.get("/user/:id",isAdmin,validateQuery(paginationSchema),getAllBooks)
 
 //=========================== User routes ===========================
 

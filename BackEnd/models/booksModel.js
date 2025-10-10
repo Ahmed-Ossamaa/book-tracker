@@ -20,6 +20,11 @@ const bookSchema = new mongoose.Schema({
         enum: categories,
         default: "Other"
     },
+    status: {
+        type: String,
+        enum: ["Read", "To Read", "Reading"],
+        default: "Read"
+    },
 
     coverImage: { type: String },
     coverImageId: { type: String },

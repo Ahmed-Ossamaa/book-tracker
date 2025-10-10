@@ -22,7 +22,7 @@ const app = express();
 app.use(helmet()); //security http headers
 const limiter = rateLimit({
     max: 100, // 100 requests
-    windowMs: 15 * 60 * 1000, // per 15 minutes
+    windowMs: 30 * 60 * 1000, // per 15 minutes
     message: 'Too many requests from this IP, please try again later' //it sends 429
 });
 app.use(limiter);

@@ -24,7 +24,8 @@ const addBookSchema = joi.object({
         "number.min": "Book rating should be at least 1",
         "number.max": "Book rating should not exceed 5"
     }),
-    review: joi.string().optional().allow("")
+    review: joi.string().optional().allow(""),
+    status: joi.string().valid("Read", "To Read", "Reading").default("Read")
 });
 
 // =========================== Edit book schema ===============================
@@ -49,7 +50,8 @@ const editBookSchema = joi.object({
         "number.min": "Book rating should be at least 1",
         "number.max": "Book rating should not exceed 5"
     }),
-    review: joi.string().optional().allow("")
+    review: joi.string().optional().allow(""),
+    status: joi.string().valid("Read", "To Read", "Reading").default("Read")
 });
 
 module.exports = { addBookSchema, editBookSchema };

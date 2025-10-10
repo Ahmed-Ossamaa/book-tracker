@@ -33,4 +33,23 @@ export const userService = {
         });
         return response.data;
     },
+        // Admin: Get all users   ====>>  toDo
+    getAllUsers: async () => {
+        const response = await api.get('/users/all');
+        return response.data;
+    },
+
+    deleteUser: async (Id) => {
+        const response = await api.delete(`/users/${Id}`);
+        return response.data;
+    },
+
+    banUser: async (Id, isBanned) => {
+        const response = await api.patch(`/users/ban/${Id}`, { isBanned });
+        return response.data;
+    },
+    changeRole: async (Id, role) => {
+        const response = await api.patch(`/users/role/${Id}`, { role });
+        return response.data;
+    },
 };

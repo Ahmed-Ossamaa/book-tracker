@@ -17,8 +17,8 @@ export const BookCard = ({ book, onEdit, onDelete, onView, isAdmin = false }) =>
             {/* Book Cover */}
             <div
                 onClick={() => onView(book._id)}
-                className="relative h-64 bg-gray-200 overflow-hidden"
-            >
+                className="relative h-64 bg-gray-200 overflow-hidden cursor-pointer"
+                >
                 {book.coverImage ? (
                     <img
                         src={book.coverImage}
@@ -31,32 +31,41 @@ export const BookCard = ({ book, onEdit, onDelete, onView, isAdmin = false }) =>
                     </div>
                 )}
 
-                {/* Category Badge */}
+                {/* Category */}
                 <div className="absolute top-2 left-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
                     {book.category}
+                </div>
+                {/* stsatus Badge */}
+                <div
+                    className={`absolute top-2 right-[-40px] w-[120px] text-center text-[11px] font-bold text-white py-1 rotate-45 shadow-md ${book.status == 'Read' ? 'bg-green-600' : 'bg-gray-500'
+                        }`}
+                >
+                    {book.status ? book.status : 'read'}
                 </div>
             </div>
 
             {/* Book Info */}
             <div className="p-4 flex flex-col flex-grow">
-                <h3 className="font-bold text-lg mb-1 truncate">{book.title}</h3>
+                <div onClick={() => onView(book._id)} className="cursor-pointer">
+                    <h3 className="font-bold text-lg mb-1 truncate">{book.title}</h3>
+                </div>
                 <p className="text-gray-600 text-sm mb-2">{book.author || 'Unknown Author'}</p>
 
                 {/* Rating */}
-                {book.rating && (
+                {book.rating ? (
                     <div className="flex items-center space-x-1 mb-2">
                         {renderStars(book.rating)}
                     </div>
-                )}
+                ) : <div className="text-gray-500 text-sm mb-2"> Unrated</div>}
 
-                {/* Review Preview */}
+                {/* Reviews */}
                 {book.review && (
                     <p className="text-gray-500 text-sm mb-3">
                         {truncateText(book.review, 80)}
                     </p>
                 )}
 
-                {/* Actions pinned to bottom */}
+                {/* Actions as footer */}
                 <div className="mt-auto pt-3 border-t flex space-x-2">
                     {!isAdmin && (
                         <button
@@ -73,7 +82,7 @@ export const BookCard = ({ book, onEdit, onDelete, onView, isAdmin = false }) =>
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            onDelete(book._id);
+                            onDelete(book);
                         }}
                         className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-red-50 text-red-600 rounded hover:bg-red-100 transition"
                     >

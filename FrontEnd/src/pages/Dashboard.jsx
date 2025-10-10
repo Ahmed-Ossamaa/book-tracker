@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -12,6 +13,8 @@ import { FiPlus, FiBookOpen, FiStar, FiEdit } from 'react-icons/fi';
 import { getInitials } from '../utils/helpers';
 import { BOOK_CATEGORIES } from '../utils/constants';
 import toast from 'react-hot-toast';
+import { ConfirmDialog } from '../components/common/confirmationDial';
+import { useCallback } from 'react';
 
 export const Dashboard = () => {
     const { user } = useAuth();
@@ -23,12 +26,16 @@ export const Dashboard = () => {
     const [pagination, setPagination] = useState({ page: 1, limit: 12, total: 0 });
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [profile, setProfile] = useState(null);
+    const [stats, setStats] = useState({ total: 0, withReviews: 0, averageRating: 0, byCategory: {} });
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [bookToDelete, setBookToDelete] = useState(null);
+    const [readStatus, setReadStatus] = useState(0);
+
+
 
     useEffect(() => {
-        fetchBooks();
         fetchProfile();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pagination.page]);
+    }, []);
 
     const fetchProfile = async () => {
         try {
@@ -39,24 +46,37 @@ export const Dashboard = () => {
         }
     };
 
-    const fetchBooks = async () => {
+    const fetchBooks = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await bookService.getBooks(pagination.page, pagination.limit);
+            const data = await bookService.getBooks(
+                pagination.page,
+                pagination.limit,
+                selectedCategory !== 'All' ? selectedCategory : undefined
+            );
             setBooks(data.books);
             setPagination(prev => ({ ...prev, total: data.total }));
+            console.log(data.stats.total);
+            setStats(data.stats); // Update stats from backend
+            setReadStatus(data.stats.status);
+            console.log(data.stats.status);
         } catch (error) {
-            toast.error('Failed to fetch books', error);
+            toast.error('Failed to fetch books');
         } finally {
             setLoading(false);
         }
-    };
+    }, [pagination.page, pagination.limit, selectedCategory]);
+
+    useEffect(() => {
+        fetchBooks();
+
+    }, [fetchBooks]);
 
     const handleAddBook = async (bookData) => {
         try {
             await bookService.addBook(bookData);
             toast.success('Book added successfully!');
-            fetchBooks();
+            fetchBooks(); // This will refresh both books and stats
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to add book');
             throw error;
@@ -67,24 +87,34 @@ export const Dashboard = () => {
         try {
             await bookService.updateBook(editingBook._id, bookData);
             toast.success('Book updated successfully!');
-            fetchBooks();
+            fetchBooks(); // This will refresh both books and stats
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to update book');
+            toast.error('Failed to update book');
             throw error;
         }
     };
 
-    const handleDeleteBook = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this book?')) return;
+    const handleDeleteBook = (book) => {
+        setBookToDelete(book);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!bookToDelete) return;
 
         try {
-            await bookService.deleteBook(id);
+            await bookService.deleteBook(bookToDelete._id);
             toast.success('Book deleted successfully!');
+
             fetchBooks();
         } catch (error) {
-            toast.error('Failed to delete book', error);
+            toast.error('Failed to delete book');
+        } finally {
+            setIsDeleteDialogOpen(false);
+            setBookToDelete(null);
         }
     };
+
 
     const openEditModal = (book) => {
         setEditingBook(book);
@@ -96,15 +126,10 @@ export const Dashboard = () => {
         setEditingBook(null);
     };
 
-    const filteredBooks = selectedCategory === 'All'
-        ? books
-        : books.filter(book => book.category === selectedCategory);
-
-    const totalBooks = books.length;
-    const booksWithReviews = books.filter(b => b.review).length;
-    const averageRating = books.length > 0
-        ? (books.reduce((sum, b) => sum + (b.rating || 0), 0) / books.length).toFixed(1)
-        : 0;
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+        setPagination(prev => ({ ...prev, page: 1 })); // Reset to page 1
+    };
 
     if (loading && books.length === 0) {
         return <Loader />;
@@ -125,29 +150,36 @@ export const Dashboard = () => {
                         {/* Stats Grid with Avatar in Center */}
                         <div className="relative flex items-center justify-center gap-8 max-w-5xl w-full">
                             {/* Left Side - 2 Cards */}
-                            <div className="grid grid-cols-1 gap-4 flex-1">
+                            <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4 flex-1 ">
                                 <StatsCard
                                     icon={FiBookOpen}
                                     label="Own Books"
-                                    value={totalBooks}
+                                    value={stats.total}
                                     color="primary"
                                 />
                                 <StatsCard
-                                    icon={FiBookOpen}
-                                    label="Want to Read"
-                                    value={totalBooks}
-                                    color="green"
+                                    icon={FiEdit}
+                                    label="Reviews"
+                                    value={stats.withReviews}
+                                    color="purple"
                                 />
+                                <StatsCard
+                                    icon={FiStar}
+                                    label="Avg Rating"
+                                    value={stats.averageRating}
+                                    color="yellow"
+                                />
+
                             </div>
 
                             {/* Center - Profile Picture */}
                             <div className="flex-shrink-0">
-                                <div className="w-40 h-40 rounded-full bg-secondary flex items-center justify-center  font-bold ">
+                                <div className="w-40 h-40 rounded-full bg-secondary flex items-center justify-center font-bold">
                                     {profile?.profilePic ? (
                                         <img
                                             src={profile.profilePic}
                                             alt={profile.firstName}
-                                            className=" rounded-full object-cover shadow"
+                                            className="w-40 h-40 rounded-full object-cover shadow"
                                         />
                                     ) : (
                                         <div className="w-40 h-40 rounded-full bg-gray-600 flex items-center justify-center text-white text-2xl font-bold">
@@ -158,17 +190,23 @@ export const Dashboard = () => {
                             </div>
 
                             {/* Right Side - 2 Cards */}
-                            <div className="grid grid-cols-1 gap-4 flex-1">
+                            <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4 flex-1">
                                 <StatsCard
-                                    icon={FiEdit}
-                                    label="Reviews"
-                                    value={booksWithReviews}
+                                    icon={FiBookOpen}
+                                    label="Read"
+                                    value={stats.status.read}
+                                    color="green"
+                                />
+                                <StatsCard
+                                    icon={FiBookOpen}
+                                    label="Reading"
+                                    value={stats.status.reading}
                                     color="purple"
                                 />
                                 <StatsCard
-                                    icon={FiStar}
-                                    label="Avg Rating"
-                                    value={averageRating}
+                                    icon={FiBookOpen}
+                                    label=" To Read"
+                                    value={stats.status.toRead}
                                     color="yellow"
                                 />
                             </div>
@@ -191,21 +229,21 @@ export const Dashboard = () => {
                 {/* Category Filter */}
                 <div className="flex flex-wrap gap-2 mb-6">
                     <button
-                        onClick={() => setSelectedCategory('All')}
+                        onClick={() => handleCategoryChange('All')}
                         className={`px-4 py-2 rounded-full transition ${selectedCategory === 'All'
                             ? 'bg-primary text-white'
                             : 'bg-white text-gray-700 hover:bg-gray-100'
                             }`}
                     >
-                        All ({totalBooks})
+                        All ({stats.total})
                     </button>
                     {BOOK_CATEGORIES.map(category => {
-                        const count = books.filter(b => b.category === category).length;
+                        const count = stats.byCategory[category] || 0;
                         if (count === 0) return null;
                         return (
                             <button
                                 key={category}
-                                onClick={() => setSelectedCategory(category)}
+                                onClick={() => handleCategoryChange(category)}
                                 className={`px-4 py-2 rounded-full transition ${selectedCategory === category
                                     ? 'bg-primary text-white'
                                     : 'bg-white text-gray-700 hover:bg-gray-100'
@@ -218,7 +256,7 @@ export const Dashboard = () => {
                 </div>
 
                 {/* Books Grid */}
-                {filteredBooks.length === 0 ? (
+                {books.length === 0 ? (
                     <div className="text-center py-16">
                         <FiBookOpen size={64} className="mx-auto text-gray-300 mb-4" />
                         <h3 className="text-xl font-semibold text-gray-600 mb-2">
@@ -232,7 +270,7 @@ export const Dashboard = () => {
                 ) : (
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {filteredBooks.map(book => (
+                            {books.map(book => (
                                 <BookCard
                                     key={book._id}
                                     book={book}
@@ -276,6 +314,19 @@ export const Dashboard = () => {
                 onSubmit={editingBook ? handleEditBook : handleAddBook}
                 initialData={editingBook}
                 isEdit={!!editingBook}
+            />
+            <ConfirmDialog
+                isOpen={isDeleteDialogOpen}
+                onClose={() => {
+                    setIsDeleteDialogOpen(false);
+                    setBookToDelete(null);
+                }}
+                onConfirm={confirmDelete}
+                title="Delete Book"
+                message={`Are you sure you want to delete "${bookToDelete?.title}"? This action cannot be undone.`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                confirmColor="red"
             />
         </div>
     );

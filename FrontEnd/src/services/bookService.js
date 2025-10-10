@@ -2,8 +2,12 @@ import api from './api';
 
 export const bookService = {
     // Get user's books with pagination
-    getBooks: async (page = 1, limit = 12) => {
-        const response = await api.get(`/books?page=${page}&limit=${limit}`);
+    getBooks: async (page = 1, limit = 12, category) => {
+        let query = `?page=${page}&limit=${limit}`;
+        if (category) {
+            query += `&category=${category}`;
+        }
+        const response = await api.get(`/books${query}`);
         return response.data;
     },
 
@@ -36,7 +40,7 @@ export const bookService = {
                 formData.append(key, bookData[key]);
             }
         });
-
+        console.log("Received from form:", bookData.status);
         const response = await api.patch(`/books/${id}`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
@@ -50,15 +54,20 @@ export const bookService = {
     },
 
     // Admin: Get all books
-    getAllBooks: async (page = 1, limit = 12) => {
-        const response = await api.get(`/books/all?page=${page}&limit=${limit}`);
+    getAllBooks: async (page = 1, limit = 12, { search = "", sortBy = "createdAt", order = "desc", userId = "", category } = {}) => {
+        let query = `?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${order}`;
+        if (search) query += `&search=${search}`;
+        if (userId) query += `&userId=${userId}`;
+        if (category) query += `&category=${category}`;
+        const response = await api.get(`/books/all${query}`);
         return response.data;
-    }
-    // Admin: Get all users   ====>>  toDo
+    },
 
 
+    // Admin: Get books for a specific user
+    // getUserBooks: async (userId, page = 1, limit = 12) => {
+    //     const response = await api.get(`/books/user/${userId}?page=${page}&limit=${limit}`);
+    //     return response.data;
+    // },
 
-    // Admin: delete user  ====>>  toDo
-
-    
 };

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { FiBookOpen, FiLogOut, FiUser, FiShield } from 'react-icons/fi';
+import { FiBookOpen, FiLogOut, FiUser, FiShield, FiChevronDown } from 'react-icons/fi';
 import { useState } from 'react';
 
 export const Navbar = () => {
@@ -31,7 +31,7 @@ export const Navbar = () => {
                                 Home
                             </Link>
                             <Link to="/dashboard" className="hover:text-primary transition">
-                                My Books
+                                My Library
                             </Link>
 
                             {isAdmin() && (
@@ -49,6 +49,7 @@ export const Navbar = () => {
                                 >
                                     <FiUser size={20} />
                                     <span>{user.firstName}</span>
+                                    <FiChevronDown size={16}  className='mt-0.5'/>
                                 </button>
 
                                 {dropdownOpen && (
@@ -59,6 +60,7 @@ export const Navbar = () => {
                                         >
                                             <FiUser size={18} />
                                             <span>Profile</span>
+                                            
                                         </button>
                                         <button
                                             onClick={handleLogout}

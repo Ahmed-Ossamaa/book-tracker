@@ -15,6 +15,7 @@ export const ProfilePage = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
+    
 
     // Editable fields
     const [firstName, setFirstName] = useState("");

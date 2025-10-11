@@ -31,7 +31,7 @@ export default function Landing() {
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
-            <section className="bg-[url('Home.jpeg')] bg-cover bg-center text-white py-40  ">
+            <section className="bg-[url('/images/Home.jpeg')] bg-cover bg-center text-white py-40">
 
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-5xl md:text-6xl font-bold mb-6">

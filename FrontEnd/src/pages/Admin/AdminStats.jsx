@@ -214,7 +214,14 @@ export default function AdminStats() {
                             }}
                             options={{
                                 responsive: true,
-                                scales: { y: { beginAtZero: true } },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: (value) => (Number.isInteger(value) ? value : null),
+                                        }
+                                    }
+                                },
                             }}
                         />
                     </div>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BaseModal } from "../../components/common/BaseModal";
-import { FiMail, FiUser, FiCalendar, FiCheckCircle } from "react-icons/fi";
-import { msgService } from "../../services/msgService";
+import { FiMail, FiUser, FiCalendar  } from "react-icons/fi";
+
 
 export default function MsgDetailsModal({ message, onClose }) {
     const [loading, setLoading] = useState(false);
@@ -25,16 +25,6 @@ export default function MsgDetailsModal({ message, onClose }) {
         fetchMsg();
     }, [message]);
 
-    const handleMarkAsRead = async () => {
-        try {
-            await msgService.markAsRead(message._id);
-            toast.success("Message marked as read");
-            setMsg({ ...msg, read: true });
-        } catch (err) {
-            toast.error("Failed to mark as read");
-            console.log(err)
-        }
-    };
 
     if (!msg) return null;
 
@@ -75,18 +65,7 @@ export default function MsgDetailsModal({ message, onClose }) {
                             <p className="whitespace-pre-wrap leading-relaxed">{msg.message}</p>
                         </div>
 
-                        {/* Mark as Read Button */}
-                        {!msg.read && (
-                            <div className="text-right mt-6">
-                                <button
-                                    onClick={handleMarkAsRead}
-                                    className="flex items-center bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition ml-auto"
-                                >
-                                    <FiCheckCircle className="mr-2" />
-                                    Mark as Read
-                                </button>
-                            </div>
-                        )}
+  
                     </>
                 )}
             </div>

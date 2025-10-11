@@ -99,7 +99,7 @@ export default function AllBooks() {
     if (loading) return <Loader />;
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="min-h-screen px-6 py-8 bg-gray-100">
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Book Management</h1>

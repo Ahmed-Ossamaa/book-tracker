@@ -95,27 +95,31 @@ export default function BookDetails() {
 
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                     <div className="md:flex relative ">
-                            {/* Book Cover */}
-                            <div className=" md:w-1/3 bg-gray-200">
-                                {book.coverImage ? (
-                                    <img
-                                        src={book.coverImage}
-                                        alt={book.title}
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-full h-96 flex items-center justify-center">
-                                        <span className="text-9xl">📚</span>
-                                    </div>
-                                )}
-                            </div>
-                            {/* status Badge */}
-                            <div
-                                className={`absolute top-2 right-[-40px] w-[120px] text-center text-[11px] font-bold text-white py-1 rotate-45 shadow-md ${book.status == 'Read' ? 'bg-green-600' : 'bg-gray-500'
-                                    }`}
-                            >
-                                {book.status ? book.status : 'read'}
-                            </div>
+                        {/* Book Cover */}
+                        <div className=" md:w-1/3 bg-gray-200">
+                            {book.coverImage ? (
+                                <img
+                                    src={book.coverImage}
+                                    alt={book.title}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-96 flex items-center justify-center">
+                                    <span className="text-9xl">📚</span>
+                                </div>
+                            )}
+                        </div>
+                        {/* status Badge */}
+                        <div
+                            className={`absolute top-2 right-[-40px] w-[120px] text-center text-[11px] font-bold text-white py-1 rotate-45 shadow-md ${book.status === 'Read'
+                                ? 'bg-green-600'
+                                : book.status === 'Reading'
+                                    ? 'bg-yellow-600'
+                                    : 'bg-purple-600'
+                                }`}
+                        >
+                            {book.status ? book.status : 'read'}
+                        </div>
                         {/* Book Info */}
                         <div className="md:w-2/3 p-8">
                             <div className="flex items-start justify-between mb-4">

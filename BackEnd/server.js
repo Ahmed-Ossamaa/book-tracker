@@ -11,7 +11,8 @@ const rateLimit = require('express-rate-limit');
 //need to search and add anti xss middlewares 
 // ================ import routes ====================
 const userRoutes = require("./routes/userRoutes")
-const booksRoutes = require("./routes/bookRoutes")
+const booksRoutes = require("./routes/bookRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 // ================== Database connection ===================
 connectDB();
 //========================for payment=======================
@@ -31,6 +32,7 @@ app.use(cors());
 // ========================= Routes ============================
 app.use("/users",userRoutes)
 app.use("/books", booksRoutes)
+app.use("/contact-us", messageRoutes)
 app.all(/.*/, (req, res, next) => {
     throw new NotFoundError(`Path ${req.originalUrl} not found`);
 });

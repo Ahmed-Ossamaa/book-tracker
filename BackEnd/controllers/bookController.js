@@ -177,7 +177,7 @@ const getAllBooks = asyncHandler(async (req, res) => {
     limit = Number(limit);
     const skip = (page - 1) * limit;
 
-    // ---------- Build Query ----------
+    // ----------filter and sort ----------
     const filter = await bookFilter({ userId, search, category });
     const sortOpt = sortOption(sortBy, order);
 
@@ -193,7 +193,6 @@ const getAllBooks = asyncHandler(async (req, res) => {
         .populate("user", "fullName email");
 
     const totalPages = Math.ceil(stats.total / limit);
-
     // ---------- Respond ----------
     res.status(200).json({
         page,

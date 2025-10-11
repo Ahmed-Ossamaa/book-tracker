@@ -2,11 +2,24 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { FiBookOpen, FiLogOut, FiUser, FiShield, FiChevronDown } from 'react-icons/fi';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 export const Navbar = () => {
     const { user, logout, isAdmin } = useAuth();
     const navigate = useNavigate();
     const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    useEffect(() => {
+        if (!dropdownOpen) return;
+        const handleClickOutside = (e) => {
+            if (!e.target.closest('.dropdown-menu')) {
+                setDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [dropdownOpen]);
 
     const handleLogout = () => {
         logout();
@@ -42,25 +55,25 @@ export const Navbar = () => {
                             )}
 
                             {/* User Dropdown */}
-                            <div className="relative">
+                            <div className="relative dropdown-menu ">
                                 <button
                                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                                    className="flex items-center space-x-2 hover:text-primary transition"
+                                    className="flex items-center space-x-2 hover:text-primary transition "
                                 >
                                     <FiUser size={20} />
                                     <span>{user.firstName}</span>
-                                    <FiChevronDown size={16}  className='mt-0.5'/>
+                                    <FiChevronDown size={16} className='mt-0.5' />
                                 </button>
 
                                 {dropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
                                         <button
-                                            onClick={() => navigate("/users/profile")}
+                                            onClick={() => {navigate("/users/profile"); setDropdownOpen(false);}}
                                             className="w-full text-left px-4 py-2 text-gray-700 hover:text-primary flex items-center space-x-2"
                                         >
                                             <FiUser size={18} />
                                             <span>Profile</span>
-                                            
+
                                         </button>
                                         <button
                                             onClick={handleLogout}

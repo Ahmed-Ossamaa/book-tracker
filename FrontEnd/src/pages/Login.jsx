@@ -6,7 +6,7 @@ import { Button } from '../components/common/Button';
 import { FiBookOpen } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
-export const Login = () => {
+export default function Login  ()  {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);

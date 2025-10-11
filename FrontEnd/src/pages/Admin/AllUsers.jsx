@@ -5,8 +5,8 @@ import { Loader } from '../../components/common/Loader';
 import toast from 'react-hot-toast';
 import { FiUser, FiShield, FiSlash, FiTrash2, FiSearch, FiChevronDown } from 'react-icons/fi';
 import { FaEye } from "react-icons/fa";
-import { UserDetailsModal } from './UserDetails';
-export const AllUsers = () => {
+import UserDetailsModal from './UserDetails';
+export default function AllUsers() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -18,6 +18,17 @@ export const AllUsers = () => {
         fetchAllUsers();
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (!e.target.closest('.dropdown-menu')) {
+                setOpenUser(null);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+
     const fetchAllUsers = async () => {
         try {
             setLoading(true);
@@ -25,7 +36,6 @@ export const AllUsers = () => {
             setUsers(data);
         } catch (error) {
             toast.error(error.message || 'Failed to fetch users');
-            console.error('Error fetching All-Users:', error);
             setUsers([]);
         } finally {
             setLoading(false);
@@ -119,20 +129,20 @@ export const AllUsers = () => {
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50 ">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <tr className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="py-3 px-10 ">
                                         User
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="py-3 px-6 ">
                                         Email
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="py-3 px-6 ">
                                         Role
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="py-3 px-6 ">
                                         Status
                                     </th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase  tracking-wider">
+                                    <th className="px-6 py-3 text-center ">
                                         Actions
                                     </th>
                                 </tr>
@@ -189,7 +199,7 @@ export const AllUsers = () => {
                                                 {/* Dropdown Trigger */}
                                                 <button
                                                     onClick={() => setOpenUser(user._id === openUser ? null : user._id)}
-                                                    className="inline-flex justify-center rounded-md border border-gray-300  px-2 py-1.5  hover:bg-gray-100 "
+                                                    className="inline-flex justify-center rounded-md border border-gray-300  px-2 py-1.5  hover:bg-gray-100 dropdown-menu"
                                                 >
                                                     Actions
                                                     <FiChevronDown size={16} className="ml-1 mt-0.5" />
@@ -201,16 +211,17 @@ export const AllUsers = () => {
                                                         <div className="py-1">
                                                             {/* View user detals */}
                                                             <button
-                                                                onClick={() => setSelectedUser(user)}
+                                                                onClick={() => {
+                                                                    setSelectedUser(user);
+                                                                }}
                                                                 className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                             >
                                                                 <FaEye className="inline mr-2 text-primary" size={14} />
                                                                 View
                                                             </button>
-                                                            
+
                                                             {/* Toggle Role */}
-                                                            <button
-                                                                onClick={() => handleMakeAdmin(user._id, user.role)}
+                                                            <button onClick={() => handleMakeAdmin(user._id, user.role)}
                                                                 className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                             >
                                                                 <FiShield className="inline mr-2 text-primary" size={14} />
@@ -219,7 +230,7 @@ export const AllUsers = () => {
 
                                                             {/* Ban / Unban */}
                                                             <button
-                                                                onClick={() => handleBanUser(user._id, user.isBanned)}
+                                                                onClick={() =>  handleBanUser(user._id, user.isBanned)}
                                                                 className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                             >
                                                                 <FiSlash className="inline mr-2 text-yellow-500" size={14} />

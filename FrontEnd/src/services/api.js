@@ -22,12 +22,28 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
     (response) => response,
-    (error) => {
+    async (error) => {
+        // Handle unauthorized error
         if (error.response?.status === 401) {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             window.location.href = '/login';
         }
+
+        // Handle network error
+        if (!error.response) {
+            console.warn('Network error detected:', error.message);
+
+            // Retry once after 1 second
+            if (!error.config._retry) {
+                error.config._retry = true;
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                return axiosInstance(error.config);
+            }
+
+            console.error('Sever is unreachable.');
+        }
+
         return Promise.reject(error);
     }
 );

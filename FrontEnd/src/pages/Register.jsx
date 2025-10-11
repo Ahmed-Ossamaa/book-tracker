@@ -6,7 +6,7 @@ import { Button } from '../components/common/Button';
 import { FiBookOpen } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
-export const Register = () => {
+export default function Register () {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',

@@ -1,13 +1,29 @@
+import { useState } from 'react';
 import { FiEdit2, FiTrash2, FiStar } from 'react-icons/fi';
 import { truncateText } from '../../utils/helpers';
 
-export const BookCard = ({ book, onEdit, onDelete, onView, isAdmin = false }) => {
-    const renderStars = (rating) => {
+export const BookCard = ({ book, onEdit, onDelete, onView, onRate, isAdmin = false }) => {
+    const [currentRating, setCurrentRating] = useState(book.rating || 0);
+
+    const handleRate = (index) => {
+        // If the same star clicked again => reset to 0
+        const newRating = currentRating === index + 1 ? 0 : index + 1;
+        setCurrentRating(newRating);
+        if (onRate) onRate(book._id, newRating); 
+    };
+
+    const renderStars = () => {
         return [...Array(5)].map((_, i) => (
             <FiStar
                 key={i}
-                size={16}
-                className={i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                size={18}
+                className={`cursor-pointer transition 
+                    ${i < currentRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                    hover:scale-110`}
+                onClick={(e) => {
+                    e.stopPropagation(); 
+                    handleRate(i);
+                }}
             />
         ));
     };
@@ -18,12 +34,12 @@ export const BookCard = ({ book, onEdit, onDelete, onView, isAdmin = false }) =>
             <div
                 onClick={() => onView(book._id)}
                 className="relative h-64 bg-gray-200 overflow-hidden cursor-pointer"
-                >
+            >
                 {book.coverImage ? (
                     <img
                         src={book.coverImage}
                         alt={book.title}
-                        className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full  cursor-pointer hover:scale-105 transition-transform duration-300"
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
@@ -35,10 +51,16 @@ export const BookCard = ({ book, onEdit, onDelete, onView, isAdmin = false }) =>
                 <div className="absolute top-2 left-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
                     {book.category}
                 </div>
-                {/* stsatus Badge */}
+
+                {/* Status Badge */}
                 <div
-                    className={`absolute top-2 right-[-40px] w-[120px] text-center text-[11px] font-bold text-white py-1 rotate-45 shadow-md ${book.status == 'Read' ? 'bg-green-600' : 'bg-gray-500'
-                        }`}
+                    className={`absolute top-2 right-[-40px] w-[120px] text-center text-[11px] font-bold text-white py-1 rotate-45 shadow-md ${
+                        book.status === 'Read'
+                            ? 'bg-green-600'
+                            : book.status === 'Reading'
+                            ? 'bg-yellow-600'
+                            : 'bg-purple-600'
+                    }`}
                 >
                     {book.status ? book.status : 'read'}
                 </div>
@@ -52,11 +74,7 @@ export const BookCard = ({ book, onEdit, onDelete, onView, isAdmin = false }) =>
                 <p className="text-gray-600 text-sm mb-2">{book.author || 'Unknown Author'}</p>
 
                 {/* Rating */}
-                {book.rating ? (
-                    <div className="flex items-center space-x-1 mb-2">
-                        {renderStars(book.rating)}
-                    </div>
-                ) : <div className="text-gray-500 text-sm mb-2"> Unrated</div>}
+                <div className="flex items-center space-x-1 mb-2">{renderStars()}</div>
 
                 {/* Reviews */}
                 {book.review && (
@@ -65,7 +83,7 @@ export const BookCard = ({ book, onEdit, onDelete, onView, isAdmin = false }) =>
                     </p>
                 )}
 
-                {/* Actions as footer */}
+                {/* Actions */}
                 <div className="mt-auto pt-3 border-t flex space-x-2">
                     {!isAdmin && (
                         <button
@@ -94,4 +112,3 @@ export const BookCard = ({ book, onEdit, onDelete, onView, isAdmin = false }) =>
         </div>
     );
 };
-

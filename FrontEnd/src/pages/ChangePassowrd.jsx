@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { userService } from "../services/userService";
@@ -7,9 +6,10 @@ import { Button } from "../components/common/Button";
 import { Input } from '../components/common/Input';
 import toast from "react-hot-toast";
 
-export const ChangePassword = () => {
+export default function ChangePassword  () {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+    // eslint-disable-next-line no-unused-vars
     const [profile, setProfile] = useState(null);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -25,7 +25,7 @@ export const ChangePassword = () => {
             setCurrentPassword(data.currentPassword);
             setNewPassword(data.newPassword);
         } catch (err) {
-            toast.error("Failed to load profile");
+            toast.error(err.message||"Failed to load profile");
         } finally {
             setLoading(false);
         }
@@ -43,7 +43,7 @@ export const ChangePassword = () => {
             navigate("/login");
             setCurrentPassword
         } catch (err) {
-            toast.error("Failed to update password");
+            toast.error(err.message || "Failed to update password");
         }
     }
 

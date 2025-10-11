@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { ConfirmDialog } from '../components/common/confirmationDial';
 import { BookForm } from '../components/books/BookForm';
 
-export const BookDetails = () => {
+export default function BookDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [book, setBook] = useState(null);
@@ -28,7 +28,7 @@ export const BookDetails = () => {
             const data = await bookService.getBook(id);
             setBook(data);
         } catch (error) {
-            toast.error('Book not found', error);
+            toast.error(error.message || 'Book not found');
             navigate('/dashboard');
         } finally {
             setLoading(false);

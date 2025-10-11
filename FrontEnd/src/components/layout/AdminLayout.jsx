@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { AdminSidebar } from './Sidebar';
 
 
-export const AdminLayout = () => {
+export default function AdminLayout () {
 
 
     return (

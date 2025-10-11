@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { userService } from "../services/userService";
@@ -8,7 +7,7 @@ import { Input } from '../components/common/Input';
 import toast from "react-hot-toast";
 import { getInitials } from "../utils/helpers";
 
-export const ProfilePage = () => {
+export default function ProfilePage () {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
@@ -35,7 +34,7 @@ export const ProfilePage = () => {
             setEmail(data.email);
             setImagePreview(data.profilePic);
         } catch (err) {
-            toast.error("Failed to load profile");
+            toast.error(err.message || "Failed to load profile");
         } finally {
             setLoading(false);
         }
@@ -73,7 +72,7 @@ export const ProfilePage = () => {
             setProfile(updated);
             toast.success("Profile picture updated successfully");
         } catch (err) {
-            toast.error("Failed to upload profile picture");
+            toast.error(err.message || "Failed to update profile picture");
             setImagePreview(profile.profilePic);
         } finally {
             setUploading(false);
@@ -88,7 +87,7 @@ export const ProfilePage = () => {
             setImagePreview(null);
             toast.success("Profile picture removed");
         } catch (err) {
-            toast.error("Failed to remove profile picture");
+            toast.error(err.message || "Failed to remove profile picture");
         } finally {
             setUploading(false);
         }
@@ -106,7 +105,7 @@ export const ProfilePage = () => {
             setProfile(updated);
             toast.success("Profile updated successfully");
         } catch (err) {
-            toast.error("Failed to update profile");
+            toast.error(err.message || "Failed to update profile");
         } finally {
             setLoading(false);
         }

@@ -7,7 +7,7 @@ import { FaEye } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { BOOK_CATEGORIES } from '../../utils/constants';
 
-export const AllBooks = () => {
+export default function AllBooks() {
     const navigate = useNavigate();
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,6 +20,17 @@ export const AllBooks = () => {
 
     useEffect(() => {
         fetchAllBooks();
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (!e.target.closest('.dropdown-menu')) {
+                setOpenBook(null);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
     }, []);
 
     const fetchAllBooks = async () => {
@@ -114,12 +125,12 @@ export const AllBooks = () => {
                         onChange={handleCategoryChange}
                         className="border border-gray-300 rounded-lg px-3 py-2 text-sm "
                     >
-                            <option value="All">All Categories</option>
-                            {BOOK_CATEGORIES.map((category) => (
-                                <option key={category} value={category} >
-                                    {category}
-                                </option>
-                            ))}
+                        <option value="All">All Categories</option>
+                        {BOOK_CATEGORIES.map((category) => (
+                            <option key={category} value={category} >
+                                {category}
+                            </option>
+                        ))}
 
                     </select>
                 </div>
@@ -170,7 +181,7 @@ export const AllBooks = () => {
                                                 <div className="relative inline-block">
                                                     <button
                                                         onClick={() => setOpenBook(book._id === openBook ? null : book._id)}
-                                                        className="inline-flex justify-center rounded-md border border-gray-300 px-2 py-1.5 hover:bg-gray-100"
+                                                        className="inline-flex justify-center rounded-md border border-gray-300 px-2 py-1.5 hover:bg-gray-100 dropdown-menu"
                                                     >
                                                         Actions
                                                         <FiChevronDown size={16} className="ml-1 mt-0.5" />

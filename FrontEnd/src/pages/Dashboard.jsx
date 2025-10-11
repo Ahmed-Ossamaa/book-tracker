@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -16,7 +16,7 @@ import toast from 'react-hot-toast';
 import { ConfirmDialog } from '../components/common/confirmationDial';
 import { useCallback } from 'react';
 
-export const Dashboard = () => {
+export default function Dashboard() {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [books, setBooks] = useState([]);
@@ -29,6 +29,7 @@ export const Dashboard = () => {
     const [stats, setStats] = useState({ total: 0, withReviews: 0, averageRating: 0, byCategory: {} });
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [bookToDelete, setBookToDelete] = useState(null);
+    // eslint-disable-next-line no-unused-vars
     const [readStatus, setReadStatus] = useState(0);
 
 
@@ -60,8 +61,8 @@ export const Dashboard = () => {
             setStats(data.stats); // Update stats from backend
             setReadStatus(data.stats.status);
             console.log(data.stats.status);
-        } catch (error) {
-            toast.error('Failed to fetch books');
+        } catch (err) {
+            toast.error(err.message || "Failed to load books");
         } finally {
             setLoading(false);
         }
@@ -107,8 +108,8 @@ export const Dashboard = () => {
             toast.success('Book deleted successfully!');
 
             fetchBooks();
-        } catch (error) {
-            toast.error('Failed to delete book');
+        } catch (err) {
+            toast.error(err.message || 'Failed to delete book');
         } finally {
             setIsDeleteDialogOpen(false);
             setBookToDelete(null);
@@ -148,7 +149,7 @@ export const Dashboard = () => {
                         </div>
 
                         {/* Stats Grid with Avatar in Center */}
-                        <div className="relative flex items-center justify-center gap-8 max-w-5xl w-full">
+                        <div className="relative flex items-center justify-center gap-8  w-full">
                             {/* Left Side - 2 Cards */}
                             <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4 flex-1 ">
                                 <StatsCard
@@ -179,7 +180,8 @@ export const Dashboard = () => {
                                         <img
                                             src={profile.profilePic}
                                             alt={profile.firstName}
-                                            className="w-40 h-40 rounded-full object-cover shadow"
+                                            onClick={() => navigate('/users/profile')}
+                                            className="w-40 h-40 rounded-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
                                         />
                                     ) : (
                                         <div className="w-40 h-40 rounded-full bg-gray-600 flex items-center justify-center text-white text-2xl font-bold">
@@ -199,16 +201,17 @@ export const Dashboard = () => {
                                 />
                                 <StatsCard
                                     icon={FiBookOpen}
-                                    label="Reading"
-                                    value={stats.status.reading}
+                                    label=" To Read"
+                                    value={stats.status.toRead}
                                     color="purple"
                                 />
                                 <StatsCard
                                     icon={FiBookOpen}
-                                    label=" To Read"
-                                    value={stats.status.toRead}
+                                    label="Reading"
+                                    value={stats.status.reading}
                                     color="yellow"
                                 />
+
                             </div>
                         </div>
                     </div>
@@ -225,36 +228,28 @@ export const Dashboard = () => {
                         Add New Book
                     </Button>
                 </div>
-
                 {/* Category Filter */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                    <button
-                        onClick={() => handleCategoryChange('All')}
-                        className={`px-4 py-2 rounded-full transition ${selectedCategory === 'All'
-                            ? 'bg-primary text-white'
-                            : 'bg-white text-gray-700 hover:bg-gray-100'
-                            }`}
+                <div className="mb-6">
+                    <select
+                        value={selectedCategory}
+                        onChange={(e) => handleCategoryChange(e.target.value)}
+                        className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-700  "
                     >
-                        All ({stats.total})
-                    </button>
-                    {BOOK_CATEGORIES.map(category => {
-                        const count = stats.byCategory[category] || 0;
-                        if (count === 0) return null;
-                        return (
-                            <button
-                                key={category}
-                                onClick={() => handleCategoryChange(category)}
-                                className={`px-4 py-2 rounded-full transition ${selectedCategory === category
-                                    ? 'bg-primary text-white'
-                                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                                    }`}
-                            >
-                                {category} ({count})
-                            </button>
-                        );
-                    })}
-                </div>
+                        <option value="All">
+                            All ({stats.total})
+                        </option>
 
+                        {BOOK_CATEGORIES.map(category => {
+                            const count = stats.byCategory[category] || 0;
+                            if (count === 0) return null;
+                            return (
+                                <option key={category} value={category}>
+                                    {category} ({count})
+                                </option>
+                            );
+                        })}
+                    </select>
+                </div>
                 {/* Books Grid */}
                 {books.length === 0 ? (
                     <div className="text-center py-16">

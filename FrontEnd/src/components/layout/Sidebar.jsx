@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { FiMenu, FiX, FiHome, FiBook, FiUsers, FiBarChart2, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiHome, FiBook, FiUsers, FiBarChart2, FiLogOut, FiMessageSquare } from 'react-icons/fi';
 
 export const AdminSidebar = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,6 +14,7 @@ export const AdminSidebar = () => {
         { icon: FiBook, label: 'All Books', path: '/admin/books' },
         { icon: FiUsers, label: 'All Users', path: '/admin/users' },
         { icon: FiBarChart2, label: 'Statistics', path: '/admin/stats' },
+        { icon: FiMessageSquare, label: 'Messages', path: '/admin/messages' },
     ];
 
     const handleNavigation = (path) => {

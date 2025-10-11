@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { FiBookOpen, FiStar, FiImage, FiBarChart2 } from 'react-icons/fi';
 import { authService } from '../services/authService';
+import Footer from '../components/layout/Footer';
 
-export const Landing = () => {
+export default function Landing() {
     const isAuthenticated = authService.isAuthenticated();
     const features = [
         {
@@ -39,7 +40,7 @@ export const Landing = () => {
                     <p className="text-xl md:text-2xl mb-8  max-w-3xl mx-auto">
                         Organize your books, rate them, write reviews, and build your personal library
                     </p>
-                    {!isAuthenticated && (
+                    {!isAuthenticated ? (
                         <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                             <Link
                                 to="/register"
@@ -52,6 +53,21 @@ export const Landing = () => {
                                 className="bg-white text-dark hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg"
                             >
                                 Login
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                            <Link
+                                to="/about"
+                                className="bg-blue-600 hover:bg-primary text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg"
+                            >
+                                About Us
+                            </Link>
+                            <Link
+                                to="/contact-us"
+                                className="bg-white text-dark hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg"
+                            >
+                                Contact Us
                             </Link>
                         </div>
                     )}
@@ -108,19 +124,7 @@ export const Landing = () => {
                     )}
                 </div>
             </section>
-
-            {/* Footer */}
-            <footer className="bg-dark text-white py-8">
-                <div className="container mx-auto px-4 text-center">
-                    <div className="flex items-center justify-center space-x-2 mb-4">
-                        <FiBookOpen className="text-primary" size={24} />
-                        <span className="text-xl font-bold">BOOK<span className="text-primary">TRACKER</span></span>
-                    </div>
-                    <p className="text-gray-400">
-                        &copy; {new Date().getFullYear()} BookTracker. All rights reserved.
-                    </p>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 };

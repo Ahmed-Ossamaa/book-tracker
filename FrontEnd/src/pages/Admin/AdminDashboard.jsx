@@ -8,12 +8,12 @@ import { FiBookOpen, FiUsers, FiTrendingUp, FiActivity } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { DashboardButton, OverviewRow, BookCard } from '../../components/adminDb/admindb';
 
-export const AdminDashboard = () => {
+export default function AdminDashboard () {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({
-        totalBooks: 0,
-        totalUsers: 0,
+        totalBooks: 'Loading...',
+        totalUsers: 'Loading...',
         mostReadCategory: 'Loading...',
         recentBooks: []
     });

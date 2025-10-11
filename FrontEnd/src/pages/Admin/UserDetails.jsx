@@ -16,7 +16,7 @@ import { IoMdLogIn } from "react-icons/io";
 import { HiOutlineMail } from "react-icons/hi";
 
 
-export const UserDetailsModal = ({ user, onClose }) => {
+export default function UserDetailsModal  ({ user, onClose })  {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -55,7 +55,6 @@ export const UserDetailsModal = ({ user, onClose }) => {
             showCloseButton={true}
             closeOnBackdrop={true}
             closeOnEsc={true}
-            // className="bg-white"
             title={
                 <>
                     {user?.fullName}{" "} <span className="text-xs  text-gray-200">#{user?._id}</span>

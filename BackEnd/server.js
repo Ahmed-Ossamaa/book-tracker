@@ -20,6 +20,7 @@ connectDB();
 
 // ===================== Middlewares and Security =======================
 const app = express();
+app.set('trust proxy', 1);
 app.use(helmet()); //security http headers
 const limiter = rateLimit({
     max: 100, // 100 requests

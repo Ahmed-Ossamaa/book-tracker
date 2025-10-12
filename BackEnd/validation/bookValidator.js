@@ -14,7 +14,7 @@ const addBookSchema = joi.object({
             "any.only": "Invalid category",
         }),
     coverImage: joi.string().optional(),
-    rating: joi.number().min(1).max(5).optional().allow(null).when('review', {
+    rating: joi.number().min(0).max(5).optional().allow(null).when('review', {
         is: joi.string().min(1),
         then: joi.number().required().messages({
             "any.required": "Rating is required when review is provided",

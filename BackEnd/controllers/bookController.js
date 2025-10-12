@@ -124,7 +124,9 @@ const editBook = asyncHandler(async (req, res, next) => {
     if (title !== undefined) book.title = title;
     if (author !== undefined) book.author = author;
     if (category !== undefined) book.category = category;
-    if (rating !== undefined) book.rating = rating;
+    if (rating !== undefined) {
+        book.rating = rating === "0" || rating === 0 ? null : rating;
+    }
     if (review !== undefined) book.review = review;
     if (status !== undefined) book.status = status;
 

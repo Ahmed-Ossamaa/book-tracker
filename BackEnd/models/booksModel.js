@@ -30,13 +30,14 @@ const bookSchema = new mongoose.Schema({
     coverImageId: { type: String },
     rating: {
         type: Number,
-        min: 1,
+        default: null,
+        min: 0,
         max: 5,
         validate: {
             validator: function (value) {
-                return value == null || (value >= 1 && value <= 5);
+                return value == null || (value >= 0 && value <= 5);
             },
-            message: "Book rating should be between 1 and 5"
+            message: "Book rating should be between 0 and 5"
         }
     },
     review: { type: String },

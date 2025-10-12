@@ -21,7 +21,7 @@ const addBookSchema = joi.object({
             "number.base": "Rating must be a number"
         })
     }).messages({
-        "number.min": "Book rating should be at least 1",
+        "number.min": "Book rating should be at least 0",
         "number.max": "Book rating should not exceed 5"
     }),
     review: joi.string().optional().allow(""),

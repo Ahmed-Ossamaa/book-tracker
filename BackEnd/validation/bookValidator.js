@@ -40,18 +40,12 @@ const editBookSchema = joi.object({
         .valid(...categories)
         .messages({ "any.only": "Invalid category" }).optional(),
     coverImage: joi.string().optional(),
-    rating: joi.number().min(1).max(5).optional().allow(null).when('review', {
-        is: joi.string().min(1),
-        then: joi.number().required().messages({
-            "any.required": "Rating is required when review is provided",
-            "number.base": "Rating must be a number"
-        })
-    }).messages({
-        "number.min": "Book rating should be at least 1",
+    rating: joi.number().min(0).max(5).optional().allow(null).messages({
+        "number.min": "Book rating should be at least 0",
         "number.max": "Book rating should not exceed 5"
     }),
-    review: joi.string().optional().allow(""),
-    status: joi.string().valid("Read", "To Read", "Reading").default("Read")
+    review: joi.string().optional().allow("").allow(null),
+    status: joi.string().valid("Read", "To Read", "Reading").optional()
 });
 
 module.exports = { addBookSchema, editBookSchema };

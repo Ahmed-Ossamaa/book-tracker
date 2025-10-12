@@ -2,13 +2,12 @@ const { User } = require('../models/usersModel');
 const { NotFoundError } = require('../utils/ApiError');
 
 //book Filter
-async function bookFilter({ _Id, search, category }) {
+async function bookFilter({ userId, search, category }) {
     const filter = {};
 
-    if (_Id) {
-        const user = await User.findById(_Id);
-        if (!user) throw new NotFoundError(`User with id ${_Id} not found`);
-        filter.user = _Id;
+    if (userId) {
+
+        filter.user = userId;
     }
 
     if (search) {

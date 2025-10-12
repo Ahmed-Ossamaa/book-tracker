@@ -40,7 +40,6 @@ export const bookService = {
                 formData.append(key, bookData[key]);
             }
         });
-        console.log("Received from form:", bookData.status);
         const response = await api.patch(`/books/${id}`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });

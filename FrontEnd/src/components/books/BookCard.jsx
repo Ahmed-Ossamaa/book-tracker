@@ -7,8 +7,8 @@ export const BookCard = ({ book, onEdit, onDelete, onView, onRate, isAdmin = fal
 
     const handleRate = (index) => {
         // If the same star clicked again => reset to 0
-        const newRating = currentRating === index + 1 ? 0 : index + 1;
-        setCurrentRating(newRating);
+        const newRating = currentRating === index + 1 ? null : index + 1;
+        setCurrentRating(newRating|| 0);
         if (onRate) onRate(book._id, newRating); 
     };
 

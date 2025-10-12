@@ -94,6 +94,19 @@ export default function Dashboard() {
             throw error;
         }
     };
+    const handleRateBook = async (bookId, rating) => {
+        try {
+            const data = await bookService.updateBook(bookId, { rating });
+            setBooks(prevBooks =>
+                prevBooks.map(book =>
+                    book._id === bookId ? data.book : book
+                )
+            );
+        } catch (error) {
+            toast.error('Failed to rate book');
+            console.error(error);
+        }
+    };
 
     const handleDeleteBook = (book) => {
         setBookToDelete(book);
@@ -272,6 +285,7 @@ export default function Dashboard() {
                                     onEdit={openEditModal}
                                     onDelete={handleDeleteBook}
                                     onView={(id) => navigate(`/books/${id}`)}
+                                    onRate={ handleRateBook}
                                 />
                             ))}
                         </div>

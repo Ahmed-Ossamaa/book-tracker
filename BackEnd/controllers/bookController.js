@@ -2,8 +2,9 @@ const Book = require("../models/booksModel");
 const User = require("../models/usersModel");
 const { bookFilter, sortOption, calcBookStats } = require('../utils/bookHelpers');
 const asyncHandler = require("express-async-handler");
-const { NotFoundError } = require("../utils/ApiError");
+const { NotFoundError, ForbiddenError } = require("../utils/ApiError");
 const cloudinary = require("../config/cloudinary"); // for destroying images
+const { DEMO_ADMIN } = require("../constants/demo-accounts");
 
 // User : get user's own books
 const getBooks = asyncHandler(async (req, res, next) => {
@@ -141,6 +142,10 @@ const editBook = asyncHandler(async (req, res, next) => {
 //User : delete book by id
 const deleteBook = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
+    // Demo admin acc check
+    if (req.user.id === DEMO_ADMIN) {
+        throw new ForbiddenError("Demo Account : Restricted to perform this action");
+    }
 
     const book = await Book.findById(id);
     if (!book) {
@@ -149,7 +154,7 @@ const deleteBook = asyncHandler(async (req, res, next) => {
 
     // Check ownership OR admin
     if (book.user.toString() !== req.user.id && req.user.role !== "admin") {
-        throw new NotFoundError("Not authorized to delete this book");
+        throw new ForbiddenError("Not authorized to delete this book");
     }
 
     // Delete image from Cloudinary if exists

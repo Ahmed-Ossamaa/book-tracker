@@ -1,0 +1,1 @@
+export const DEMO_ADMIN = '6a12ccda8e00e810722ea9da'

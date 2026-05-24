@@ -22,14 +22,14 @@ connectDB();
 const app = express();
 app.set('trust proxy', 1);
 app.use(helmet()); //security http headers
+app.use(cors());
 const limiter = rateLimit({
     max: 100, // 100 requests
-    windowMs: 30 * 60 * 1000, // per 15 minutes
+    windowMs: 30 * 60 * 1000, // per 30 minutes
     message: 'Too many requests from this IP, please try again later' //it sends 429
 });
 app.use(limiter);
 app.use(express.json());
-app.use(cors());
 // ========================= Routes ============================
 app.use("/users",userRoutes)
 app.use("/books", booksRoutes)

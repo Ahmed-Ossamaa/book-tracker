@@ -1,5 +1,7 @@
 const Message = require('../models/messagesModel')
 const asyncHandler = require('express-async-handler')
+const { ForbiddenError } = require('../utils/ApiError')
+const { DEMO_ADMIN } = require('../constants/demo-accounts')
 
 // create message
 const sendMessage = asyncHandler(async (req, res, next) => {
@@ -22,6 +24,11 @@ const getAllMessages = asyncHandler(async (req, res, next) => {
 
 const deleteMessage = asyncHandler(async (req, res, next) => {
         const { id } = req.params
+
+        if (req.user.id === DEMO_ADMIN) {
+                throw new ForbiddenError("Demo Account : Restricted to perform this action");
+        }
+
         const message = await Message.findByIdAndDelete(id)
         res.status(200).json({ data: message, message: 'Message deleted successfully' })
 })

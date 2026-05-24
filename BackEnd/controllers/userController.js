@@ -2,8 +2,9 @@ const User = require("../models/usersModel");
 const bcrypt = require("bcryptjs");//for hasing password
 const jwt = require("jsonwebtoken");//for auth
 const asyncHandler = require("express-async-handler");
-const { ConflictError, UnauthorizedError, NotFoundError, BadRequestError } = require("../utils/ApiError");
+const { ConflictError, UnauthorizedError, NotFoundError, BadRequestError, ForbiddenError } = require("../utils/ApiError");
 const cloudinary = require("../config/cloudinary"); //for destroying images
+const { DEMO_ADMIN } = require("../constants/demo-accounts");
 
 // Generate JWT
 const generateToken = (id) => {
@@ -156,6 +157,9 @@ const getAllUsers = asyncHandler(async (req, res, next) => {
 //delete user by id (only admin)
 const deleteUser = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
+    if (req.user._id.toString() === DEMO_ADMIN) {
+        throw new ForbiddenError("Demo Account : Restricted to perform this action");
+    }
     const user = await User.findByIdAndDelete(id);
     if (!user) {
         throw new NotFoundError(`User with id ${id} not found`);

@@ -76,7 +76,7 @@ export default function AllUsers() {
             toast.success('User deleted successfully!');
             fetchAllUsers();
         } catch (error) {
-            toast.error(error.message || 'Failed to delete user');
+            toast.error(error?.response?.data?.message || 'Failed to delete user');
         }
     };
 
@@ -126,7 +126,7 @@ export default function AllUsers() {
                 </div>
             ) : (
                 <div className="bg-white rounded-lg shadow overflow-hidden">
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto min-h-[250px]">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50 ">
                                 <tr className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -148,7 +148,7 @@ export default function AllUsers() {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {filteredUsers.map(user => (
+                                {filteredUsers.map((user, index) => (
                                     <tr key={user._id} className="hover:bg-gray-50 transition-colors">
                                         {/* User Info */}
                                         <td className="px-6 py-4 whitespace-nowrap">
@@ -207,7 +207,7 @@ export default function AllUsers() {
 
                                                 {/* Dropdown Items */}
                                                 {openUser === user._id && (
-                                                    <div className=" absolute right-0 mt-1 w-30 rounded-md bg-white border border-gray200 z-10">
+                                                    <div className={`absolute right-0 ${index >= filteredUsers.length - 2 && filteredUsers.length > 2 ? 'bottom-full mb-1' : 'top-full mt-1'} w-36 rounded-md bg-white border border-gray-200 shadow-lg z-10`}>
                                                         <div className="py-1">
                                                             {/* View user detals */}
                                                             <button

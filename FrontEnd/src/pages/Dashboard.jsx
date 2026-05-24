@@ -122,7 +122,7 @@ export default function Dashboard() {
 
             fetchBooks();
         } catch (err) {
-            toast.error(err.message || 'Failed to delete book');
+            toast.error(err?.response?.data?.message || 'Failed to delete book');
         } finally {
             setIsDeleteDialogOpen(false);
             setBookToDelete(null);
@@ -285,7 +285,7 @@ export default function Dashboard() {
                                     onEdit={openEditModal}
                                     onDelete={handleDeleteBook}
                                     onView={(id) => navigate(`/books/${id}`)}
-                                    onRate={ handleRateBook}
+                                    onRate={handleRateBook}
                                 />
                             ))}
                         </div>

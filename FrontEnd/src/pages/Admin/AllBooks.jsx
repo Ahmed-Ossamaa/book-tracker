@@ -56,8 +56,7 @@ export default function AllBooks() {
             toast.success('Book deleted successfully!');
             fetchAllBooks();
         } catch (error) {
-            toast.error('Failed to delete book');
-            console.log(`Error deleting book: ${error}`);
+            toast.error(error?.response?.data?.message || 'Failed to delete book');
         }
     };
 
@@ -147,7 +146,7 @@ export default function AllBooks() {
             ) : (
                 <>
                     <div className="bg-white rounded-lg shadow overflow-hidden">
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto min-h-[250px]">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
@@ -187,7 +186,7 @@ export default function AllBooks() {
                                                         <FiChevronDown size={16} className="ml-1 mt-0.5" />
                                                     </button>
                                                     {openBook === book._id && (
-                                                        <div className="absolute right-0 mt-1 w-30 rounded-md bg-white border border-gray-200 shadow-lg z-10">
+                                                        <div className={`absolute right-0 ${i >= paginatedBooks.length - 2 && paginatedBooks.length > 2 ? 'bottom-full mb-1' : 'top-full mt-1'} w-36 rounded-md bg-white border border-gray-200 shadow-lg z-10`}>
                                                             <div className="py-1">
                                                                 <button
                                                                     onClick={() => navigate(`/books/${book._id}`)}

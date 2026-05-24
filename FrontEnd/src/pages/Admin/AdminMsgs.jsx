@@ -8,6 +8,7 @@ import {
     FiMail,
 } from "react-icons/fi";
 import MsgDetailsModal from "./MsgDetails";
+import toast from "react-hot-toast";
 
 export default function AdminMessages() {
     const [messages, setMessages] = useState([]);
@@ -43,8 +44,9 @@ export default function AdminMessages() {
         try {
             await msgService.deleteMsg(id);
             setMessages((prev) => prev.filter((m) => m._id !== id));
+            toast.success("Message deleted successfully");
         } catch (err) {
-            console.error(err);
+            toast.error(err?.response?.data?.message || "Failed to delete message");
         }
     };
 
@@ -81,7 +83,7 @@ export default function AdminMessages() {
                 </div>
             ) : (
                 <div className="bg-white rounded-lg shadow overflow-hidden">
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto min-h-[350px]">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -93,7 +95,7 @@ export default function AdminMessages() {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {messages.map((msg) => (
+                                {messages.map((msg, index) => (
                                     <tr
                                         key={msg._id}
                                         className={`hover:bg-gray-50 transition-colors ${
@@ -143,7 +145,7 @@ export default function AdminMessages() {
 
                                                 {/* Dropdown Items */}
                                                 {openMsg === msg._id && (
-                                                    <div className="absolute right-0 mt-1 w-40 rounded-md bg-white border border-gray-200 shadow-lg z-10">
+                                                    <div className={`absolute right-0 ${index >= messages.length - 2 && messages.length > 2 ? 'bottom-full mb-1' : 'top-full mt-1'} w-40 rounded-md bg-white border border-gray-200 shadow-lg z-10`}>
                                                         <div className="py-1">
                                                             {/* View */}
                                                             <button
